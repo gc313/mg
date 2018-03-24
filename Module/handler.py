@@ -184,9 +184,11 @@ def add_orders(order_data, update_code):
     #剩余时间 = 订单持续时间 - （当前UTC时间 - 下单时间）
     lim = order_data["duration"] - int((datetime.utcnow() - datetime.strptime(order_data["issued"],"%Y-%m-%dT%H:%M:%SZ")).days)
     if lim < 2:
+        con.logger.debug("订单期限太短，放弃")
         return
     #订单剩余量小于1000的放弃
     if order_data["volume_remain"] < 1000:
+        con.logger.debug("订单数量太少，放弃")
         return
 
     db.create_tb(con.order_db, order_data["type_id"],
@@ -204,8 +206,10 @@ def add_orders(order_data, update_code):
 
     #判断买/卖单
     if order_data["is_buy_order"] == True:
+        con.logger.debug("买单")
         b_or_s = 1
     else:
+        con.logger.debug("卖单")
         b_or_s = 0
     #插入数据
     db.insert(con.order_db, order_data["type_id"],

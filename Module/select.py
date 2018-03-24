@@ -3,6 +3,7 @@
 
 import Module.config as con
 import Module.database as db
+import Module.http as http
 
 def find_tables(db_name, update_code):
     con.logger.info("开始处理订单")
@@ -59,6 +60,9 @@ def contrast(db_name, table_name, update_code):
             if rate_of_return < 0.15:
                 con.logger.debug("低利润，排除")
                 break
+            #判断有无安全路径
+            if route(origin_id, destin_id) == False:
+                break
             #将交易策略加入数据表
             db.insert(db_name, "contrast",
             id = "null",
@@ -87,7 +91,10 @@ def contrast(db_name, table_name, update_code):
 
     con.logger.debug("物品ID：%s 交易策略已存入" % (table_name))
     return
-
+#判断有无安全路径
+def route(origin_id, destin_id):
+    route = json.loads(http.get("route", origin_id, destin_id, avoid = 0, flag = "secure", datasource = con.datasource, user_agent = con.user_agent())
+    return
 #输出最终结果
 def out_put():
     con.logger.info("输出结果")
