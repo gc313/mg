@@ -7,16 +7,15 @@ import Module.config as con
 def get(*args, **kw):
     #加不来header，手动构建URL
     #增加将不是字符串的参数都转换为字符串的代码
-    #（）待增加
     head = con.api_url
     body = "/".join(args) + "/"
     #超棒的写法，我要好好记住,把键：值从kw里取出来组合后用&隔开
-    tail = "&".join(key+"="+value for key, value in kw.items())
+    tail = "&".join(key+"="+str(value) for key, value in kw.items())
     URL = head + body + '?' + tail
 
 
     #请求网页
-    #con.logger.debug('请求网页%s' % (URL))
+    con.logger.debug('请求网页%s' % (URL))
     req = urllib.request.Request(URL)
 
     #初始化重试次数

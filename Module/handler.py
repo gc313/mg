@@ -44,32 +44,13 @@ def get_universe_data(father, oneself):
             con.logger.info('新增数据：%s ID：%s' % (oneself, str(i)))
             if oneself == 'regions':
                 #星域 regions, ID, name
-                db.insert(con.uni_db, oneself,
-                id = str(i),
-                name = id_info['name'])
+                db.insert(con.uni_db, "insert into regions (id, name) values ('%s', '%s')" % (str(i), id_info['name']))
             elif oneself == 'constellations':
                 #星座 constellations, ID, name, 所属星域ID
-                db.insert(con.uni_db, oneself,
-                id = str(i),
-                name = id_info['name'],
-                regions = id_info['region_id'])
+                db.insert(con.uni_db, "insert into constellations (id, name, regions) values ('%s', '%s', '%s')" % (str(i), id_info['name'], str(id_info['region_id'])))
             elif oneself == 'systems':
                 #星系 systems, ID, name, 所属星座ID，安全等级
-                db.insert(con.uni_db, oneself,
-                id = str(i),
-                name = id_info['name'],
-                constellations = id_info['constellation_id'],
-                security_status = id_info['security_status'])
-            elif oneself == 'types':
-                #获取中文名字
-                zh_name = json.loads(http.get(father, oneself, str(i), datasource = con.datasource, language = "zh", user_agent = con.user_agent()))['name']
-                #物品 ID, en_name, zh_name, volume
-                db.insert(con.uni_db, oneself,
-                id = str(i),
-                en_name = id_info['name'],
-                zh_name = zh_name,
-                volume = id_info['packaged_volume'])
-
+                db.insert(con.uni_db, "insert into systems (id, name, constellations, security_status) values ('%s', '%s', '%s', %.3f)" % (str(i), id_info['name'], str(id_info['constellation_id']), id_info['security_status']))
         else:
             #print('跳过' + str(i))
             con.logger.debug('该%s ID：%s已存在' % (oneself, str(i)))
@@ -124,27 +105,28 @@ def filter(order_data, update_code):
         return
 
     #判断地点是否在高安表中
-    if db.TorF(con.uni_db, 'H_sec_location', location_id) == True:
+    if db.TorF(con.uni_db, 'H_sec_location', str(location_id)) == True:
         #进入订单处理
-        con.logger.debug("空间站ID：%s 已在高安表中" % location_id)
-        #con.logger.debug("进入订单处理")
+        con.logger.debug("空间站ID：%s 已在高安表中" % (str(location_id)))
+        con.logger.debug("进入订单处理")
         add_orders(order_data, update_code)
 
     else:
         #判断地点是否在低安表中
-        if db.TorF(con.uni_db, 'L_sec_location', location_id) == True:
+        if db.TorF(con.uni_db, 'L_sec_location', str(location_id)) == True:
             #跳过，分析下一个订单
-            con.logger.debug("空间站ID：%s 在低安星系表中，不采集数据" % location_id)
+            con.logger.debug("空间站ID：%s 在低安星系表中，不采集数据" % (str(location_id)))
         else:
             #向服务器获取地点所在的星系安等信息
-            con.logger.info("获取空间站（ID：%d）所在星系安等信息" % (location_id))
+            con.logger.info("获取空间站（ID：%s）所在星系安等信息" % (str(location_id)))
 
-            loca = json.loads(http.get("universe", "stations", str(location_id), datasource = con.datasource, user_agent = con.user_agent()))
-            sys_ID = loca["system_id"]
+            location_info = json.loads(http.get("universe", "stations", str(location_id), datasource = con.datasource, user_agent = con.user_agent()))
+            sys_ID = str(location_info["system_id"])
             #-------------------------------------------
-            if check_security(sys_ID) == True:
+            #判断星系安全等级
+            if db.check_security(sys_ID) == True:
 
-                db.insert(con.uni_db, "H_sec_location", id = location_id, name = loca["name"], systems = sys_ID)
+                db.insert(con.uni_db, "insert into H_sec_location (id, name, systems) values ('%s', '%s', '%s')" % (str(location_id), location_info["name"].replace("'", ''), sys_ID))
                 #高安星系，进入订单处理
                 con.logger.debug("高安星系，进入订单处理")
                 add_orders(order_data, update_code)
@@ -153,15 +135,9 @@ def filter(order_data, update_code):
             else:
                 #将信息加到低安表中
                 con.logger.debug("将信息加到低安表中")
-                db.insert(con.uni_db, "L_sec_location", id = location_id, name = loca["name"], systems = sys_ID)
+                db.insert(con.uni_db, "insert into L_sec_location (id, name, systems) values ('%s', '%s', '%s')" % (str(location_id), location_info["name"].replace("'", ''), sys_ID))
     return
-#判断星系安全等级
-def check_security(system_id):
-    res = db.select(con.uni_db, "systems", "security_status", where = "id = %s" % (system_id))[0][0]
-    if res > 0.459:
-        return True
-    else:
-        return False
+
 #进一步处理订单
 def add_orders(order_data, update_code):
     con.logger.debug("订单信息：%s" % order_data)
@@ -180,6 +156,16 @@ def add_orders(order_data, update_code):
     "range": "region"
   }
     '''
+    #判断物品信息是否在types表中
+    if db.TorF(con.uni_db, "types", str(order_data["type_id"])) == False:
+        #向服务器获取名字
+        #print(url)
+        en_name = json.loads(http.get("universe", "types", str(order_data["type_id"]), datasource = con.datasource, language = "en-us", user_agent = con.user_agent()))['name']
+        zh_name = json.loads(http.get("universe", "types", str(order_data["type_id"]), datasource = con.datasource, language = "zh", user_agent = con.user_agent()))['name']
+        volume = json.loads(http.get("universe", "types", str(order_data["type_id"]), datasource = con.datasource, language = "en-us", user_agent = con.user_agent()))['volume']
+        #将名字加入数据库
+        con.logger.debug("将名字加入数据库")
+        db.insert(con.uni_db, "insert into types (id, en_name, zh_name, volume) VALUES ('%s', '%s', '%s', %f)" % (str(order_data["type_id"]), en_name.replace("'", ''), zh_name, volume))
     #订单剩余时间小于2天的放弃
     #剩余时间 = 订单持续时间 - （当前UTC时间 - 下单时间）
     lim = order_data["duration"] - int((datetime.utcnow() - datetime.strptime(order_data["issued"],"%Y-%m-%dT%H:%M:%SZ")).days)
@@ -187,14 +173,14 @@ def add_orders(order_data, update_code):
         con.logger.debug("订单期限太短，放弃")
         return
     #订单剩余量小于1000的放弃
-    if order_data["volume_remain"] < 1000:
+    if order_data["volume_remain"] < 10000:
         con.logger.debug("订单数量太少，放弃")
         return
 
-    db.create_tb(con.order_db, order_data["type_id"],
-        "order_id integer primary key",
-        "type_id integer",
-        "location integer",
+    db.create_tb(con.order_db, str(order_data["type_id"]),
+        "order_id varchar(20) primary key",
+        "type_id varchar(20)",
+        "location varchar(20)",
         "volume_remain integer",
         "min_volume integer",
         "price real",
@@ -202,7 +188,7 @@ def add_orders(order_data, update_code):
         "lim integer",
         "update_code real")
     #检索该表，如果有update_code列数据和目前的update_code不一致的数据，就删掉
-    db.delete(con.order_db, order_data["type_id"],"update_code <> %f" % (update_code))
+    db.delete(con.order_db, "delete from '%s' where update_code <> %f" % (str(order_data["type_id"]), update_code))
 
     #判断买/卖单
     if order_data["is_buy_order"] == True:
@@ -212,16 +198,15 @@ def add_orders(order_data, update_code):
         con.logger.debug("卖单")
         b_or_s = 0
     #插入数据
-    db.insert(con.order_db, order_data["type_id"],
-        order_id = order_data["order_id"],
-        type_id = order_data["type_id"],
-        location = order_data["location_id"],
-        volume_remain = order_data["volume_remain"],
-        min_volume = order_data["min_volume"],
-        price = order_data["price"],
-        b_or_s = b_or_s,
-        lim = lim,
-        update_code = update_code
-        )
+    db.insert(con.order_db, '''insert into '%s' (order_id, type_id, location, volume_remain, min_volume, price, b_or_s,lim, update_code
+    ) VALUES ('%s', '%s', '%s', %d, %d, %.2f, %d, %d, %f)''' % (str(order_data["type_id"]), str(order_data["order_id"]), str(order_data["type_id"]),
+        str(order_data["location_id"]),
+        order_data["volume_remain"],
+        order_data["min_volume"],
+        order_data["price"],
+        b_or_s,
+        lim,
+        update_code
+        ))
 
     return
