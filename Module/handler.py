@@ -165,7 +165,7 @@ def add_orders(order_data, update_code):
         volume = json.loads(http.get("universe", "types", str(order_data["type_id"]), datasource = con.datasource, language = "en-us", user_agent = con.user_agent()))['volume']
         #将名字加入数据库
         con.logger.debug("将名字加入数据库")
-        db.insert(con.uni_db, "insert into types (id, en_name, zh_name, volume) VALUES ('%s', '%s', '%s', %f)" % (str(order_data["type_id"]), en_name.replace("'", ''), zh_name, volume))
+        db.insert(con.uni_db, "insert into types (id, en_name, zh_name, volume) VALUES ('%s', '%s', '%s', %f)" % (str(order_data["type_id"]), en_name.replace("'", ''), zh_name.replace("'", ''), volume))
     #订单剩余时间小于2天的放弃
     #剩余时间 = 订单持续时间 - （当前UTC时间 - 下单时间）
     lim = order_data["duration"] - int((datetime.utcnow() - datetime.strptime(order_data["issued"],"%Y-%m-%dT%H:%M:%SZ")).days)
