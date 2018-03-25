@@ -3,11 +3,6 @@
 import sqlite3
 import Module.config as con
 
-#创建数据库
-def create_db(name, *args, **kw):
-
-
-    return
 #创建表
 def create_tb(db_name, table_name, *args):
     '''CREATE TABLE database_name.table_name(

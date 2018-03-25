@@ -31,7 +31,7 @@ def contrast(db_name, table_name, update_code):
     type_zh_name = db.select(con.uni_db, "select zh_name from 'types' where id = '%s'" % (table_name))[0][0]
 
     #筛选出卖单
-    sell_order = db.select(db_name, "select * from %s where b_or_s = 0 order by price" % (table_name))
+    sell_order = db.select(db_name, "select * from '%s' where b_or_s = 0 order by price" % (table_name))
 
     for i in sell_order:
         con.logger.debug("筛选卖单")
@@ -43,7 +43,7 @@ def contrast(db_name, table_name, update_code):
         sell_order_lim = i[7] #订单期限
 
         #筛选出买单
-        buy_order = db.select(db_name, "select * from %s where b_or_s = 1 order by price DESC" % (table_name))
+        buy_order = db.select(db_name, "select * from '%s' where b_or_s = 1 order by price DESC" % (table_name))
         for n in buy_order:
             con.logger.debug("筛选买单")
             buy_location_name, buy_system = db.select(con.uni_db, "select name, systems from 'H_sec_location' where id = '%s'" % (n[2]))[0] #收购地址和所在星系
@@ -61,7 +61,7 @@ def contrast(db_name, table_name, update_code):
             distance = route.distance #距离
             score =profit_unit / type_volume #策略评分（待完善）
             #收益率小于某个数直接跳出循环
-            if rate_of_return < 0.20:
+            if rate_of_return < 0.10:
                 con.logger.debug("低利润，排除")
                 break
             #判断有无安全路径
@@ -92,9 +92,8 @@ def contrast(db_name, table_name, update_code):
             distance,
             score,
             update_code
-            ) VALUES ('%s', '%s', '%s', '%s', %f, '%s', '%s', %.2f, %d, %d,
+            ) VALUES (null, '%s', '%s', '%s', %f, '%s', '%s', %.2f, %d, %d,
             '%s', '%s', %.2f, %d, %d, %f, %f, %f, %f, %d, %f, %f)''' % (
-            "null",
             type_id,
             type_en_name,
             type_zh_name,
