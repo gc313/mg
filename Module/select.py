@@ -54,14 +54,14 @@ def contrast(db_name, table_name, update_code):
 
             #计算
             #sell_price为我向别人购买的价格（别人的卖单），buy_price为我向别人出售的价格（别人的买单）
-            rate_of_return = (buy_price - sell_price) / sell_price #收益率
+            rate_of_return = (buy_price - sell_price) / sell_price #比率
             profit_unit = buy_price - sell_price #单位利润
             profit_total = (buy_price - sell_price) * min(buy_volume_remain, sell_volume_remain) #理论利润总额
             total_cost = sell_price * min(buy_volume_remain, sell_volume_remain) #资金占用量
             distance = 1 #距离
-            score =profit_unit / type_volume #策略评分（待完善）
+            score = profit_unit / type_volume #策略评分（待完善）
             #收益率小于某个数直接跳出循环
-            if rate_of_return < 0.10:
+            if rate_of_return < 0.20:
                 con.logger.debug("低利润，排除")
                 break
             #判断有无安全路径

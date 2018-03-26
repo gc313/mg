@@ -173,7 +173,7 @@ def add_orders(order_data, update_code):
         con.logger.debug("订单期限太短，放弃")
         return
     #订单剩余量小于1000的放弃
-    if order_data["volume_remain"] < 10000:
+    if order_data["volume_remain"] < 100000:
         con.logger.debug("订单数量太少，放弃")
         return
 
