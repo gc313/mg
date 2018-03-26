@@ -9,7 +9,7 @@ import Module.sendmail as mail
 def find_tables(db_name, update_code):
     con.logger.info("开始处理订单")
     #数据校验，删除以往数据
-    #db.delete(db_name, "delete from contrast where update_code <> %f" % (update_code))
+    db.delete(db_name, "delete from contrast where update_code <> %f" % (update_code))
     #获取表名
     table_names = db.select(db_name, "select name from sqlite_master where type='table' order by name")
     #通过表名逐个表梳理数据
