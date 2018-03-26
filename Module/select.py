@@ -37,7 +37,7 @@ def contrast(db_name, table_name, update_code):
         con.logger.debug("筛选卖单")
         type_id = i[1] #物品ID
         sell_location_name, sell_system = db.select(con.uni_db, "select name, systems from 'H_sec_location' where id = '%s'" % (i[2]))[0] #出售地址和所在星系
-        sell_system_name = db.select(con.uni_db, "select name from 'systems' where id = '%s'" % (sell_system))
+        sell_system_name = db.select(con.uni_db, "select name from 'systems' where id = '%s'" % (sell_system))[0][0]
         sell_price = i[5] #卖价
         sell_volume_remain = i[3] #库存
         sell_order_lim = i[7] #订单期限
@@ -47,7 +47,7 @@ def contrast(db_name, table_name, update_code):
         for n in buy_order:
             con.logger.debug("筛选买单")
             buy_location_name, buy_system = db.select(con.uni_db, "select name, systems from 'H_sec_location' where id = '%s'" % (n[2]))[0] #收购地址和所在星系
-            buy_system_name = db.select(con.uni_db, "select name from 'systems' where id = '%s'" % (buy_system))
+            buy_system_name = db.select(con.uni_db, "select name from 'systems' where id = '%s'" % (buy_system))[0][0]
             buy_price = n[5] #收购价
             buy_volume_remain = n[3] #需求量
             buy_order_lim = n[7] #订单期限
@@ -58,7 +58,7 @@ def contrast(db_name, table_name, update_code):
             profit_unit = buy_price - sell_price #单位利润
             profit_total = (buy_price - sell_price) * min(buy_volume_remain, sell_volume_remain) #理论利润总额
             total_cost = sell_price * min(buy_volume_remain, sell_volume_remain) #资金占用量
-            distance = route.distance #距离
+            distance = 1 #距离
             score =profit_unit / type_volume #策略评分（待完善）
             #收益率小于某个数直接跳出循环
             if rate_of_return < 0.10:
@@ -95,16 +95,16 @@ def contrast(db_name, table_name, update_code):
             ) VALUES (null, '%s', '%s', '%s', %f, '%s', '%s', %.2f, %d, %d,
             '%s', '%s', %.2f, %d, %d, %f, %f, %f, %f, %d, %f, %f)''' % (
             type_id,
-            type_en_name,
-            type_zh_name,
+            type_en_name.replace("'", ''),
+            type_zh_name.replace("'", ''),
             type_volume,
-            sell_location_name,
-            sell_system_name,
+            sell_location_name.replace("'", ''),
+            sell_system_name.replace("'", ''),
             sell_price,
             sell_volume_remain,
             sell_order_lim,
-            buy_location_name,
-            buy_system_name,
+            buy_location_name.replace("'", ''),
+            buy_system_name.replace("'", ''),
             buy_price,
             buy_volume_remain,
             buy_order_lim,
@@ -160,7 +160,7 @@ def out_put():
         "score" : i[20]
         })
         con.logger.info('''
-        物品ID：%d,
+        物品ID：%s,
         名称：%s(%s),
         打包体积：%f,
         出售点：%s(%s)(%d),
@@ -185,7 +185,7 @@ def out_put():
 def Text(text):
     txt = ""
     for i in text:
-        txt = txt + "物品ID：%d,名称：%s(%s),打包体积：%f,出售点：%s(%s)(%d),售价：%.2f,库存：%d | 收购点：%s(%s)(%d),收购价：%.2f,需求量：%d | 收益率：%.3f,单位利润：%.2f,利润总额：%.2f,占用资金：%.2f,距离：%d,评估：%.2f" % (i["type_id"],
-        i["name"],i["volume"],i["sell_location_name"],i["buy_location_name"],i["buy_price"],i["buy_volume_remain"],i["rate_of_return"],i["profit_unit"],i["profit_total"],i["total_cost"],i["distance"],i["score"]) + "<br>"
+        txt = txt + "物品ID：%s,名称：%s,打包体积：%f,出售点：%s,售价：%.2f,库存：%d | 收购点：%s,收购价：%.2f,需求量：%d | 收益率：%.3f,单位利润：%.2f,利润总额：%.2f,占用资金：%.2f,距离：%d,评估：%.2f" % (i["type_id"],
+        i["name"],i["volume"],i["sell_location_name"],i["sell_price"], i["sell_volume_remain"],i["buy_location_name"],i["buy_price"],i["buy_volume_remain"],i["rate_of_return"],i["profit_unit"],i["profit_total"],i["total_cost"],i["distance"],i["score"]) + "<br>"
     mail.Sendmail(text)
     return
