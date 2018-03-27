@@ -63,7 +63,7 @@ api_url = "https://esi.tech.ccp.is/latest/"
 import logging
 #设置输出日志等级
 logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 #将日志输出到文件，文件名为日期
 date = str(datetime.now())[:10]
 #文件名
