@@ -58,7 +58,7 @@ def contrast(db_name, table_name, update_code):
             profit_unit = buy_price - sell_price #单位利润
             profit_total = (buy_price - sell_price) * min(buy_volume_remain, sell_volume_remain) #理论利润总额
             total_cost = sell_price * min(buy_volume_remain, sell_volume_remain) #资金占用量
-            score = profit_unit / type_volume #策略评分（待完善）
+            score = (profit_unit / type_volume) + profit_total#策略评分（待完善）
             #收益率小于某个数直接跳出循环
             if rate_of_return < 0.20:
                 con.logger.debug("低利润，排除")
@@ -126,15 +126,15 @@ def contrast(db_name, table_name, update_code):
 def route(origin_id, destin_id):
     rt = json.loads(http.get("route", origin_id, destin_id, avoid = '0', flag = "secure", datasource = con.datasource, user_agent = con.user_agent()))
     distance = len(rt)
-    print(distance)
-    print(rt)
+    #print(distance)
+    #print(rt)
     for i in rt:
         sec = db.check_security(str(i))
         if sec == True:
             pass
         else:
             con.logger.debug("路径中有低安星系")
-            return False
+            return False, 0
     return True, distance
 #输出最终结果
 def out_put():
