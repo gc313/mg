@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+import time
 from datetime import datetime
 import Module.initialization as ini
 import Module.handler as hd
