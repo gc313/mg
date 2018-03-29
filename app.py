@@ -28,7 +28,7 @@ if __name__ == "__main__":
 	finally:
 		con.logger.info("程序结束运行")
 	'''
-	#ini.init_table() #初始化表格
+	ini.init_table() #初始化表格
 	#ini.init_list() #采集地理数据
 	hd.get_orders_data() #采集订单数据
 	#se.find_tables(con.order_db, 1234)
