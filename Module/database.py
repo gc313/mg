@@ -5,18 +5,12 @@ import Module.config as con
 
 #创建表
 def create_tb(db_name, table_name, *args):
-    '''CREATE TABLE database_name.table_name(
-       column1 datatype  PRIMARY KEY(one or more columns),
-       column2 datatype,
-       column3 datatype,
-       .....
-       columnN datatype,)
-    '''
+
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
     #组合参数
     col = ",".join(args)
-    cursor.execute("CREATE TABLE IF NOT EXISTS '%s' (%s)" % (table_name, col))
+    cursor.execute("create table if not exists '%s' (%s)" % (table_name, col))
     cursor.close()
     conn.commit()
     conn.close()
@@ -24,9 +18,7 @@ def create_tb(db_name, table_name, *args):
 
 #增
 def insert(db_name, order):
-    '''INSERT INTO TABLE_NAME [(column1, column2, column3,...columnN)]
-        VALUES (value1, value2, value3,...valueN)
-    '''
+
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
 
@@ -41,9 +33,7 @@ def insert(db_name, order):
     return
 #删
 def delete(db_name, order):
-    '''DELETE FROM table_name
-    WHERE [condition];
-    '''
+
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
     #cursor.execute("delete from '%s' where update_code <> %f" % (type_id, update_code))
@@ -56,35 +46,14 @@ def delete(db_name, order):
 def update(db_name, table_name, *args):
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
-    cursor.execute("CREATE TABLE IF NOT EXISTS '%s' (%s)" % (table_name, col))
+    cursor.execute("")
     cursor.close()
     conn.commit()
     conn.close()
     return
 #查
 def select(db_name, order):
-    '''
-    SELECT column1, column2, columnN FROM table_name;
 
-    SELECT * FROM table_name;
-
-    SELECT column1, column2, columnN
-    FROM table_name
-    WHERE [condition1] AND [condition2]...AND [conditionN];
-
-    SELECT column-list
-    FROM table_name
-    [WHERE condition]
-    [ORDER BY column1, column2, .. columnN] [ASC | DESC];
-
-    SELECT column1, column2, columnN
-    FROM table_name
-    LIMIT [no of rows]
-
-    SELECT column1, column2, columnN
-    FROM table_name
-    LIMIT [no of rows] OFFSET [row num]
-    '''
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
 
