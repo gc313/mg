@@ -55,7 +55,7 @@ def contrast(db_name, table_name, update_code):
             #计算
             #sell_price为我向别人购买的价格（别人的卖单），buy_price为我向别人出售的价格（别人的买单）
             rate_of_return = (buy_price - sell_price) / sell_price #比率
-            profit_unit = buy_price - sell_price #单位利润
+            profit_unit = (buy_price - sell_price) / type_volume #单位体积利润
             profit_total = (buy_price - sell_price) * min(buy_volume_remain, sell_volume_remain) #理论利润总额
             total_cost = sell_price * min(buy_volume_remain, sell_volume_remain) #资金占用量
             score = (profit_unit / type_volume) + profit_total#策略评分（待完善）
@@ -196,7 +196,7 @@ def Text(text):
             						</tr>
             						<tr>
             							<td width="100" height="100" rowspan="5" style="text-align:center;vertical-align:middle;">
-            								<span style="font-size:30px;color: #263238;">%.2f</span><br />
+            								<span style="font-size:30px;color: #263238;">单位体积利润：%.2f</span><br />
             							</td>
             							<td style="text-align:center;vertical-align:middle;">
             								<span style="font-size:18px;color: #263238;">采购</span>
@@ -236,13 +236,13 @@ def Text(text):
             						</tr>
             						<tr>
             							<td colspan="3">
-            								<span style="font-size:14px;color: #263238;">收益:%.3f; 单位利润:%.2f; 利润总额:%.2f; 资金总量:%.2f</span>
+            								<span style="font-size:14px;color: #263238;">收益:%.3f; 体积:%.2f; 利润总额:%.2f; 资金占用量:%.2f</span>
             							</td>
             						</tr>
             					</tbody>
             				</table>
-        ''' % (i["name"], i["score"], i["sell_location_name"], i["buy_location_name"], i["sell_price"], i["buy_price"], i["sell_volume_remain"], i["buy_volume_remain"], i["distance"],
-        i["rate_of_return"], i["profit_unit"], i["profit_total"], i["total_cost"])
+        ''' % (i["name"], i["profit_unit"], i["sell_location_name"], i["buy_location_name"], i["sell_price"], i["buy_price"], i["sell_volume_remain"], i["buy_volume_remain"], i["distance"],
+        i["rate_of_return"], i["volume"], i["profit_total"], i["total_cost"])
         #我自己都快晕了，sell和buy是指的卖单和买单，也就是别人的卖和买，而sell单的价格是我采购的价格，buy的价格是我销售东西的价格
     index ='''<table width="600" style="width:600px;" cellpadding="0" cellspacing="0" align="center" border="0" class="ke-zeroborder" bordercolor="#000000">
     	<tbody>
