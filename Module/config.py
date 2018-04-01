@@ -46,13 +46,13 @@ My_user_agent = [
 def user_agent():
     return urllib.parse.quote("user_agent=" + random.sample(My_user_agent, 1)[0], '=') #从列表中随机选择一个元素并返回一个列表，取第一个值（也是唯一值）
 #数据路径,os.getcwd()获取当前目录
-uni_db = os.getcwd() + "/Data/UNIVERSE.db" #存储宇宙地理数据
-order_db = os.getcwd() + "/Data/ORDERS.db" #存储获取的订单信息
+uni_db = os.getcwd() + "/mg/Data/UNIVERSE.db" #存储宇宙地理数据
+order_db = os.getcwd() + "/mg/Data/ORDERS.db" #存储获取的订单信息
 
-d_path = os.getcwd() + "/Data/"
-re_j = os.getcwd() + "/Data/regions.json"
-co_j = os.getcwd() + "/Data/constellations.json"
-sy_j = os.getcwd() + "/Data/systems.json"
+d_path = os.getcwd() + "/mg/Data/"
+re_j = os.getcwd() + "/mg/Data/regions.json"
+co_j = os.getcwd() + "/mg/Data/constellations.json"
+sy_j = os.getcwd() + "/mg/Data/systems.json"
 
 #其他设置
 datasource = "tranquility" #宁静服务器
