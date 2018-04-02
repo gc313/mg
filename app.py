@@ -28,9 +28,15 @@ if __name__ == "__main__":
 	finally:
 		con.logger.info("程序结束运行")
 	'''
-	ini.init_table() #初始化表格
-	#ini.init_list() #采集地理数据
-	hd.get_orders_data() #采集订单数据
-	#se.find_tables(con.order_db, 1234)
-	se.out_put() #输出
-	#se.route('30000002', '30001688')
+	try:
+		con.logger.info("主程序运行")
+		ini.init_table() #初始化表格
+		#ini.init_list() #采集地理数据
+		hd.get_orders_data() #采集订单数据
+		#se.find_tables(con.order_db, 1234) #测试用
+		se.out_put() #输出
+		#se.route('30000002', '30001688') #测试用
+	except Exception as e:
+		con.logger.info("程序报错%s" % (e))
+	finally:
+		con.logger.info("程序结束运行")

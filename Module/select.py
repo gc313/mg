@@ -58,7 +58,7 @@ def contrast(db_name, table_name, update_code):
             profit_unit = (buy_price - sell_price) / type_volume #单位体积利润
             profit_total = (buy_price - sell_price) * min(buy_volume_remain, sell_volume_remain) #理论利润总额
             total_cost = sell_price * min(buy_volume_remain, sell_volume_remain) #资金占用量
-            score = (profit_unit / type_volume) + profit_total#策略评分（待完善）
+            score = profit_unit + profit_total#策略评分（待完善）
             #收益率小于某个数直接跳出循环
             if rate_of_return < 0.20:
                 con.logger.debug("低利润，排除")
