@@ -8,9 +8,6 @@ import email.mime.multipart
 import email.mime.text
 
 from datetime import date
-def Text(text):
-
-	return
 
 def Sendmail(message):
 

@@ -6,6 +6,7 @@ import Module.initialization as ini
 import Module.handler as hd
 import Module.select as se
 import Module.config as con
+import Module.sendmail as mail
 '''
 def Now():
 	return str(datetime.now())[:19]
@@ -38,5 +39,6 @@ if __name__ == "__main__":
 		#se.route('30000002', '30001688') #测试用
 	except Exception as e:
 		con.logger.info("程序报错%s" % (e))
+		mail.Sendmail("程序报错%s" % (e))
 	finally:
 		con.logger.info("程序结束运行")
