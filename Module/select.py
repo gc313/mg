@@ -19,6 +19,7 @@ def find_tables(db_name, update_code):
         #笨办法,剔除不需要的表
         if t_name != "contrast" and t_name != "sqlite_sequence":
             contrast(db_name, t_name, update_code)
+    con.logger.info("订单处理完成")
     return
 #获取数据进行比较
 def contrast(db_name, table_name, update_code):
@@ -180,7 +181,7 @@ def out_put():
         ''' % (i[1], i[2], i[3], i[4], i[5], i[6], i[9], i[7], i[8],
         i[10], i[11], i[14], i[12], i[13],
         i[15], i[16], i[17], i[18], i[19], i[20]))
-    con.logger.debug("发送邮件")
+    con.logger.debug("邮件文本处理")
     Text(message)
     return
 #文本处理
@@ -196,7 +197,8 @@ def Text(text):
             						</tr>
             						<tr>
             							<td width="100" height="100" rowspan="5" style="text-align:center;vertical-align:middle;">
-            								<span style="font-size:30px;color: #263238;">单位体积利润：%.2f</span><br />
+            								<span style="font-size:14px;color: #263238;">单位体积利润</span><br />
+                                            <span style="font-size:30px;color: #263238;">%.2f</span><br />
             							</td>
             							<td style="text-align:center;vertical-align:middle;">
             								<span style="font-size:18px;color: #263238;">采购</span>

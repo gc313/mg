@@ -45,14 +45,12 @@ My_user_agent = [
     ]
 def user_agent():
     return urllib.parse.quote("user_agent=" + random.sample(My_user_agent, 1)[0], '=') #从列表中随机选择一个元素并返回一个列表，取第一个值（也是唯一值）
-#数据路径,os.getcwd()获取当前目录
-uni_db = os.getcwd() + "/mg/Data/UNIVERSE.db" #存储宇宙地理数据
-order_db = os.getcwd() + "/mg/Data/ORDERS.db" #存储获取的订单信息
-
-d_path = os.getcwd() + "/mg/Data/"
-re_j = os.getcwd() + "/mg/Data/regions.json"
-co_j = os.getcwd() + "/mg/Data/constellations.json"
-sy_j = os.getcwd() + "/mg/Data/systems.json"
+#数据路径,os.path.abspath(os.path.dirname(os.path.dirname(__file__)))获取当前文件父级目录
+uni_db = os.path.abspath(os.path.dirname(os.path.dirname(__file__))) + "/Data/UNIVERSE.db" #存储宇宙地理数据
+order_db = os.path.abspath(os.path.dirname(os.path.dirname(__file__))) + "/Data/ORDERS.db" #存储获取的订单信息
+re_j = os.path.abspath(os.path.dirname(os.path.dirname(__file__))) + "/Data/regions.json"
+co_j = os.path.abspath(os.path.dirname(os.path.dirname(__file__))) + "/Data/constellations.json"
+sy_j = os.path.abspath(os.path.dirname(os.path.dirname(__file__))) + "/Data/systems.json"
 
 #其他设置
 datasource = "tranquility" #宁静服务器
@@ -67,14 +65,14 @@ logger.setLevel(logging.INFO)
 #将日志输出到文件，文件名为日期
 date = str(datetime.now())[:10]
 #文件名
-log_file = date + '.log'
+log_file = date + ".log"
 
 #创建日志处理器
 handler = logging.FileHandler(log_file)
 #handler.setLevel(logging.DEBUG)
 
 #创建日志格式
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 #日志输出到控制台
 console = logging.StreamHandler()

@@ -8,8 +8,10 @@ import email.mime.multipart
 import email.mime.text
 
 from datetime import date
+import Module.config as con
 
 def Sendmail(message):
+	con.logger.info("开始发送邮件")
 
 	today = str(date.today())
 	from_addr = "big_sister@yeah.net"

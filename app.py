@@ -7,28 +7,10 @@ import Module.handler as hd
 import Module.select as se
 import Module.config as con
 import Module.sendmail as mail
-'''
-def Now():
-	return str(datetime.now())[:19]
-'''
 
 if __name__ == "__main__":
-	'''
-	try:
-		con.logger.info('程序运行')
-		while 1:
 
-			#定时运行
-			run_time = Now()[11:13]
-			if run_time == "00" or run_time == "11":
-				con.logger.info('开始采集数据')
-				hd.get_orders_data()
-			time.sleep(3000)
-	except Exception as e:
-		con.logger.info("程序报错%s" % (e))
-	finally:
-		con.logger.info("程序结束运行")
-	'''
+#采用crontab定时运行
 	try:
 		con.logger.info("主程序运行")
 		ini.init_table() #初始化表格
@@ -38,7 +20,7 @@ if __name__ == "__main__":
 		se.out_put() #输出
 		#se.route('30000002', '30001688') #测试用
 	except Exception as e:
-		con.logger.info("程序报错%s" % (e))
+		con.logger.warning("程序报错:%s" % (e))
 		mail.Sendmail("程序报错%s" % (e))
 	finally:
 		con.logger.info("程序结束运行")
