@@ -141,7 +141,7 @@ def route(origin_id, destin_id):
 def out_put():
     con.logger.info("输出结果")
     #result = cursor.execute("select * from contrast order by profit_total DESC limit 10")
-    result = db.select(con.order_db, "select * from contrast order by score DESC limit 10")
+    result = db.select(con.order_db, "select * from contrast order by profit_total DESC limit 10")
     #con.logger.debug(result)
     message = []
     for i in result:
@@ -263,7 +263,7 @@ def Text(text):
     		</tr>
     		<tr>
     			<td width="600" height="10" bgcolor="" style="background-color: transparent; padding: 0; width: 600px; height: 10px; line-height: 10px; font-size: 10px">&nbsp;</td>
-    		</tr>
+    		</tr>bb
     		<tr>
     			<td style="background-color:#cfd8dc;padding: 15px 0px 15px 0px;">
                 ''' + content + '''
