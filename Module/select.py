@@ -238,7 +238,7 @@ def Text(text):
             						</tr>
             						<tr>
             							<td colspan="3">
-            								<span style="font-size:14px;color: #263238;">收益:%.3f; 体积:%.2f; 利润总额:%.2f; 资金占用量:%.2f</span>
+            								<span style="font-size:14px;color: #263238;">收益:%.3f; 体积:%.3f; 利润总额:%.2f; 资金占用量:%.2f</span>
             							</td>
             						</tr>
             					</tbody>
