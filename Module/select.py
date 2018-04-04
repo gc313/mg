@@ -59,7 +59,7 @@ def contrast(db_name, table_name, update_code):
             profit_unit = (buy_price - sell_price) / type_volume #单位体积利润
             profit_total = (buy_price - sell_price) * min(buy_volume_remain, sell_volume_remain) #理论利润总额
             total_cost = sell_price * min(buy_volume_remain, sell_volume_remain) #资金占用量
-            score = profit_unit * min(buy_volume_remain, sell_volume_remain)#策略评分（待完善）
+            score = profit_total + profit_unit + min(buy_volume_remain, sell_volume_remain)#策略评分（待完善）
             #收益率小于某个数直接跳出循环
             if rate_of_return < 0.20:
                 con.logger.debug("低利润，排除")
@@ -140,8 +140,8 @@ def route(origin_id, destin_id):
 #输出最终结果
 def out_put():
     con.logger.info("输出结果")
-    #result = cursor.execute("select * from contrast order by profit_total DESC limit 10")
-    result = db.select(con.order_db, "select * from contrast order by profit_total DESC limit 10")
+
+    result = db.select(con.order_db, "select * from contrast order by score DESC limit 10")
     #con.logger.debug(result)
     message = []
     for i in result:
@@ -263,7 +263,7 @@ def Text(text):
     		</tr>
     		<tr>
     			<td width="600" height="10" bgcolor="" style="background-color: transparent; padding: 0; width: 600px; height: 10px; line-height: 10px; font-size: 10px">&nbsp;</td>
-    		</tr>bb
+    		</tr>
     		<tr>
     			<td style="background-color:#cfd8dc;padding: 15px 0px 15px 0px;">
                 ''' + content + '''
