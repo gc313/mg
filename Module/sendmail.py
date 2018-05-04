@@ -14,10 +14,10 @@ def Sendmail(message):
 	con.logger.info("开始发送邮件")
 
 	today = str(date.today())
-	from_addr = "big_sister@yeah.net"
-	paswd = "raspberry3b"
-	to_addr = "gc313@qq.com"
-	smtp_server = "smtp.yeah.net"
+	from_addr = "xxx@yyy.zzz"#发件邮箱账户
+	paswd = "raspberry3b"#发件邮箱密码
+	to_addr = "aaa@qq.com"#收件地址
+	smtp_server = "smtp.yeah.net"#smtp服务器
 
 
 	msg = email.mime.multipart.MIMEMultipart()
